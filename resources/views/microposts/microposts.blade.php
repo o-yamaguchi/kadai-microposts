@@ -18,6 +18,7 @@
                         <div>
                             {{-- 投稿内容 --}}
                             <p class="mb-0">{!! nl2br(e($micropost->content)) !!}</p>
+                            <?php   var_dump($micropost->content); ?>
                         </div>
                         <div>
                             @if (Auth::id() == $micropost->user_id)
