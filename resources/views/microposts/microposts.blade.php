@@ -1,3 +1,4 @@
+
 <div class="mt-4">
     @if (isset($microposts))
         <ul class="list-none">
@@ -18,18 +19,20 @@
                         <div>
                             {{-- 投稿内容 --}}
                             <p class="mb-0">{!! nl2br(e($micropost->content)) !!}</p>
-                            <?php   var_dump($micropost->content); ?>
                         </div>
-                        <div>
-                            @if (Auth::id() == $micropost->user_id)
-                                {{-- 投稿削除ボタンのフォーム --}}
-                                <form method="POST" action="{{ route('microposts.destroy', $micropost->id) }}">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-error btn-sm normal-case" 
-                                        onclick="return confirm('Delete id = {{ $micropost->id }} ?')">Delete</button>
-                                </form>
-                            @endif
+                        <div class='flex'>
+                            <div style="flex: 1;">
+                                @if (Auth::id() == $micropost->user_id)
+                                    {{-- 投稿削除ボタンのフォーム --}}
+                                    <form method="POST" action="{{ route('microposts.destroy', $micropost->id) }}">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-error btn-sm normal-case" 
+                                            onclick="return confirm('Delete id = {{ $micropost->id }} ?')">Delete</button>
+                                    </form>
+                                @endif
+                            </div>
+                            @include('micropost_favorite.favorite_button')
                         </div>
                     </div>
                 </li>

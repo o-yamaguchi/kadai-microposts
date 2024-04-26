@@ -29,12 +29,16 @@ class UsersController extends Controller
         $user->loadRelationshipCounts();
         
         // ユーザーの投稿一覧を作成日時の降順で取得
-        $microposts = $user->microposts()->orderBy('created_at', 'desc')->paginate(10);
+        // $microposts = $user->microposts()->orderBy('created_at', 'desc')->paginate(10);
+        $microposts = $user->feed_microposts()->orderBy('created_at', 'desc')->paginate(10);
+        
+        $all_count = $user->allMicropostsCount();
 
         // ユーザー詳細ビューでそれを表示
         return view('users.show', [
             'user' => $user,
-            'microposts' => $microposts
+            'all_count' => $all_count,
+            'microposts' => $microposts,
         ]);
     }
     
@@ -54,13 +58,16 @@ class UsersController extends Controller
 
         // ユーザーのフォロー一覧を取得
         $followings = $user->followings()->paginate(10);
+        $all_count = $user->allMicropostsCount();
 
         // フォロー一覧ビューでそれらを表示
         return view('users.followings', [
             'user' => $user,
+            'all_count' => $all_count,
             'users' => $followings,
         ]);
     }
+    
 
     /**
      * ユーザーのフォロワー一覧ページを表示するアクション。
@@ -78,11 +85,30 @@ class UsersController extends Controller
 
         // ユーザーのフォロワー一覧を取得
         $followers = $user->followers()->paginate(10);
+        $all_count = $user->allMicropostsCount();
 
         // フォロワー一覧ビューでそれらを表示
         return view('users.followers', [
             'user' => $user,
+            'all_count' => $all_count,
             'users' => $followers,
+        ]);
+    }
+    
+    
+    public function favorites($id)
+    {
+        $user = User::findOrFail($id);
+        $favorites = $user->favorites()->paginate(10);
+        
+         // 関係するモデルの件数をロード
+        $user->loadRelationshipCounts();
+        $all_count = $user->allMicropostsCount();
+    
+        return view('users.favorites', [
+            'user' => $user,
+            'all_count' => $all_count,
+            'microposts' => $favorites,
         ]);
     }
 }
